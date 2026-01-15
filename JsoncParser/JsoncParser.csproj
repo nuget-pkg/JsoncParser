@@ -2,7 +2,7 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFrameworks>netstandard2.0;net462;net8.0</TargetFrameworks>
-    <Version>0.0.0.0</Version>
+    <Version>2026.0115.1547.53</Version>
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <RootNamespace>JsoncParser</RootNamespace>
