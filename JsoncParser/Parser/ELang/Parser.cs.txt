@@ -1,0 +1,273 @@
+
+namespace Global.Parser.ELang {
+
+  using System;
+  using System.Text;
+  using System.IO;
+  using System.Collections.Generic;
+
+  public class Parser
+  {
+    private Parser() {}
+
+    static public void Main(String[] args)
+    {
+      Dictionary<String, String> arguments = new Dictionary<String, String>();
+      String error = "";
+      bool ok = args.Length > 0;
+
+      if (ok)
+      {
+        arguments["Trace"] = "Off";
+        arguments["Rule"] = "elang-text";
+
+        for (int i = 0; i < args.Length; i++)
+        {
+          if (args[i].Equals("-trace"))
+            arguments["Trace"] = "On";
+          else if (args[i].Equals("-visitor"))
+            arguments["Visitor"] = args[++i];
+          else if (args[i].Equals("-file"))
+            arguments["File"] = args[++i];
+          else if (args[i].Equals("-string"))
+            arguments["String"] = args[++i];
+          else if (args[i].Equals("-rule"))
+            arguments["Rule"] = args[++i];
+          else
+          {
+            error = "unknown argument: " + args[i];
+            ok = false;
+          }
+        }
+      }
+
+      if (ok)
+      {
+        if (!arguments.ContainsKey("File") &&
+            !arguments.ContainsKey("String"))
+        {
+          error = "insufficient arguments: -file or -string required";
+          ok = false;
+        }
+      }
+
+      if (!ok)
+      {
+        System.Console.WriteLine("error: " + error);
+        System.Console.WriteLine("usage: Parser [-rule rulename] [-trace] <-file file | -string string> [-visitor visitor]");
+      }
+      else
+      {
+        try
+        {
+          Rule rule = null;
+
+          if (arguments.ContainsKey("File"))
+          {
+            rule = 
+              Parse(
+                arguments["Rule"], 
+                new FileStream(arguments["File"], FileMode.Open), 
+                arguments["Trace"].Equals("On"));
+          }
+          else if (arguments.ContainsKey("String"))
+          {
+            rule = 
+              Parse(
+                arguments["Rule"], 
+                arguments["String"], 
+                arguments["Trace"].Equals("On"));
+          }
+
+          if (arguments.ContainsKey("Visitor"))
+          {
+            Type type = Type.GetType(arguments["Visitor"]);
+
+            if (type == null)
+            {
+              System.Console.WriteLine(
+                "visitor error: class not found - " + 
+                arguments["Visitor"]);
+            }
+            else
+            {
+              Visitor visitor = (Visitor)System.Activator.CreateInstance(type);
+
+              rule.Accept(visitor);
+            }
+          }
+        }
+        catch (ArgumentException e)
+        {
+          System.Console.WriteLine("argument error: " + e.Message);
+        }
+        catch (IOException e)
+        {
+          System.Console.WriteLine("io error: " + e.Message);
+        }
+        catch (ParserException e)
+        {
+          System.Console.WriteLine("parser error: " + e.Message);
+        }
+        catch (Exception e)
+        {
+          System.Console.WriteLine("error: " + e.Message);
+        }
+      }
+    }
+
+    static public Rule Parse(String rulename, String text)
+    {
+      return Parse(rulename, text, false);
+    }
+
+    static public Rule Parse(String rulename, StreamReader input)
+    {
+      return Parse(rulename, input, false);
+    }
+
+    static public Rule Parse(String rulename, FileStream file)
+    {
+      return Parse(rulename, file, false);
+    }
+
+    static private Rule Parse(String rulename, String text, bool trace)
+    {
+      if (rulename == null)
+        throw new ArgumentNullException("null rulename");
+      if (text == null)
+        throw new ArgumentException("null string");
+
+      ParserContext context = new ParserContext(text, trace);
+
+      Rule rule = null;
+      if (rulename.ToLower().Equals("elang-text".ToLower())) rule = Rule_elang_text.Parse(context);
+      else if (rulename.ToLower().Equals("begin-array".ToLower())) rule = Rule_begin_array.Parse(context);
+      else if (rulename.ToLower().Equals("begin-vector".ToLower())) rule = Rule_begin_vector.Parse(context);
+      else if (rulename.ToLower().Equals("begin-object".ToLower())) rule = Rule_begin_object.Parse(context);
+      else if (rulename.ToLower().Equals("end-array".ToLower())) rule = Rule_end_array.Parse(context);
+      else if (rulename.ToLower().Equals("end-vector".ToLower())) rule = Rule_end_vector.Parse(context);
+      else if (rulename.ToLower().Equals("end-object".ToLower())) rule = Rule_end_object.Parse(context);
+      else if (rulename.ToLower().Equals("name-separator".ToLower())) rule = Rule_name_separator.Parse(context);
+      else if (rulename.ToLower().Equals("value-separator".ToLower())) rule = Rule_value_separator.Parse(context);
+      else if (rulename.ToLower().Equals("ws".ToLower())) rule = Rule_ws.Parse(context);
+      else if (rulename.ToLower().Equals("linecomment".ToLower())) rule = Rule_linecomment.Parse(context);
+      else if (rulename.ToLower().Equals("comment".ToLower())) rule = Rule_comment.Parse(context);
+      else if (rulename.ToLower().Equals("inslcomment".ToLower())) rule = Rule_inslcomment.Parse(context);
+      else if (rulename.ToLower().Equals("inmlcomment".ToLower())) rule = Rule_inmlcomment.Parse(context);
+      else if (rulename.ToLower().Equals("value".ToLower())) rule = Rule_value.Parse(context);
+      else if (rulename.ToLower().Equals("false".ToLower())) rule = Rule_false.Parse(context);
+      else if (rulename.ToLower().Equals("null".ToLower())) rule = Rule_null.Parse(context);
+      else if (rulename.ToLower().Equals("nil".ToLower())) rule = Rule_nil.Parse(context);
+      else if (rulename.ToLower().Equals("true".ToLower())) rule = Rule_true.Parse(context);
+      else if (rulename.ToLower().Equals("object".ToLower())) rule = Rule_object.Parse(context);
+      else if (rulename.ToLower().Equals("member".ToLower())) rule = Rule_member.Parse(context);
+      else if (rulename.ToLower().Equals("member-name".ToLower())) rule = Rule_member_name.Parse(context);
+      else if (rulename.ToLower().Equals("array".ToLower())) rule = Rule_array.Parse(context);
+      else if (rulename.ToLower().Equals("vector".ToLower())) rule = Rule_vector.Parse(context);
+      else if (rulename.ToLower().Equals("quote".ToLower())) rule = Rule_quote.Parse(context);
+      else if (rulename.ToLower().Equals("unquote".ToLower())) rule = Rule_unquote.Parse(context);
+      else if (rulename.ToLower().Equals("deref".ToLower())) rule = Rule_deref.Parse(context);
+      else if (rulename.ToLower().Equals("metadata".ToLower())) rule = Rule_metadata.Parse(context);
+      else if (rulename.ToLower().Equals("as-is".ToLower())) rule = Rule_as_is.Parse(context);
+      else if (rulename.ToLower().Equals("number".ToLower())) rule = Rule_number.Parse(context);
+      else if (rulename.ToLower().Equals("decimal-point".ToLower())) rule = Rule_decimal_point.Parse(context);
+      else if (rulename.ToLower().Equals("digit".ToLower())) rule = Rule_digit.Parse(context);
+      else if (rulename.ToLower().Equals("digit1-9".ToLower())) rule = Rule_digit1_9.Parse(context);
+      else if (rulename.ToLower().Equals("hexdig".ToLower())) rule = Rule_hexdig.Parse(context);
+      else if (rulename.ToLower().Equals("e".ToLower())) rule = Rule_e.Parse(context);
+      else if (rulename.ToLower().Equals("exp".ToLower())) rule = Rule_exp.Parse(context);
+      else if (rulename.ToLower().Equals("frac".ToLower())) rule = Rule_frac.Parse(context);
+      else if (rulename.ToLower().Equals("int".ToLower())) rule = Rule_int.Parse(context);
+      else if (rulename.ToLower().Equals("minus".ToLower())) rule = Rule_minus.Parse(context);
+      else if (rulename.ToLower().Equals("plus".ToLower())) rule = Rule_plus.Parse(context);
+      else if (rulename.ToLower().Equals("zero".ToLower())) rule = Rule_zero.Parse(context);
+      else if (rulename.ToLower().Equals("string".ToLower())) rule = Rule_string.Parse(context);
+      else if (rulename.ToLower().Equals("string1".ToLower())) rule = Rule_string1.Parse(context);
+      else if (rulename.ToLower().Equals("string2".ToLower())) rule = Rule_string2.Parse(context);
+      else if (rulename.ToLower().Equals("double-quotation-mark".ToLower())) rule = Rule_double_quotation_mark.Parse(context);
+      else if (rulename.ToLower().Equals("single-quotation-mark".ToLower())) rule = Rule_single_quotation_mark.Parse(context);
+      else if (rulename.ToLower().Equals("escape".ToLower())) rule = Rule_escape.Parse(context);
+      else if (rulename.ToLower().Equals("char1".ToLower())) rule = Rule_char1.Parse(context);
+      else if (rulename.ToLower().Equals("unescaped1".ToLower())) rule = Rule_unescaped1.Parse(context);
+      else if (rulename.ToLower().Equals("char2".ToLower())) rule = Rule_char2.Parse(context);
+      else if (rulename.ToLower().Equals("unescaped2".ToLower())) rule = Rule_unescaped2.Parse(context);
+      else if (rulename.ToLower().Equals("lisp-symbol".ToLower())) rule = Rule_lisp_symbol.Parse(context);
+      else if (rulename.ToLower().Equals("lisp-char".ToLower())) rule = Rule_lisp_char.Parse(context);
+      else throw new ArgumentException("unknown rule");
+
+      if (rule == null)
+      {
+        throw new ParserException(
+          "rule \"" + (String)context.GetErrorStack().Peek() + "\" failed",
+          context.text,
+          context.GetErrorIndex(),
+          context.GetErrorStack());
+      }
+
+      if (context.text.Length > context.index)
+      {
+        ParserException primaryError = 
+          new ParserException(
+            "extra data found",
+            context.text,
+            context.index,
+            new Stack<String>());
+
+        if (context.GetErrorIndex() > context.index)
+        {
+          ParserException secondaryError = 
+            new ParserException(
+              "rule \"" + (String)context.GetErrorStack().Peek() + "\" failed",
+              context.text,
+              context.GetErrorIndex(),
+              context.GetErrorStack());
+
+          primaryError.SetCause(secondaryError);
+        }
+
+        throw primaryError;
+      }
+
+      return rule;
+    }
+
+    static private Rule Parse(String rulename, StreamReader input, bool trace)
+    {
+      if (rulename == null)
+        throw new ArgumentNullException("null rulename");
+      if (input == null)
+        throw new ArgumentNullException("null input stream");
+
+      int ch = 0;
+      StringBuilder output = new StringBuilder();
+      while ((ch = input.Read()) != -1)
+        output.Append((char)ch);
+
+      return Parse(rulename, output.ToString(), trace);
+    }
+
+    static private Rule Parse(String rulename, FileStream file, bool trace)
+    {
+      if (rulename == null)
+        throw new ArgumentNullException("null rulename");
+      if (file == null)
+        throw new ArgumentNullException("null file");
+
+      StreamReader input = new StreamReader(file);
+      int ch = 0;
+      StringBuilder output = new StringBuilder();
+      while ((ch = input.Read()) != -1)
+        output.Append((char)ch);
+
+      input.Close();
+
+      return Parse(rulename, output.ToString(), trace);
+    }
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * eof
+ * -----------------------------------------------------------------------------
+ */
