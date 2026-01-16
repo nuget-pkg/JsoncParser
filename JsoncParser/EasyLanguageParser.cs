@@ -5,55 +5,58 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+// ReSharper disable once CheckNamespace
 namespace Global;
 
 public class EasyLanguageParser
 {
-    protected bool NumberAsDecimal = false;
+    // ReSharper disable once RedundantDefaultMemberInitializer
+    private readonly bool numberAsDecimal = false;
     public EasyLanguageParser(bool numberAsDecimal)
     {
-        this.NumberAsDecimal = numberAsDecimal;
+        this.numberAsDecimal = numberAsDecimal;
     }
 
     public object ParseJson(string json)
     {
-        return Parse(json, this.NumberAsDecimal);
+        return Parse(json, this.numberAsDecimal);
     }
 
-    public static object Parse(string json, bool NumberAsDecimal = false)
+    public static object Parse(string json, bool numberAsDecimal = false)
     {
         if (String.IsNullOrEmpty(json)) return null;
-        ParserContext context = new ParserContext(json, false);
-        Rule_elang_text rule = Rule_elang_text.Parse(context);
-        if (rule == null) throw new ArgumentException($"Illegal JSONC: `{json}`");
-        return RuleToObject(rule, NumberAsDecimal);
+        var context = new ParserContext(json, false);
+        var rule = Rule_elang_text.Parse(context);
+        return rule == null ? throw new ArgumentException($"Illegal JSONC: `{json}`") : RuleToObject(rule, numberAsDecimal);
     }
+    // ReSharper disable once MemberCanBePrivate.Global
     public static string FullName(dynamic x)
     {
         if (x is null) return "null";
         string fullName = ((object)x).GetType().FullName;
-        return fullName.Split('`')[0];
+        return fullName!.Split('`')[0];
     }
 
-    public static string ParseJsonString(string aJSON)
+    // ReSharper disable once MemberCanBePrivate.Global
+    public static string ParseJsonString(string aJson)
     {
-        if (aJSON.StartsWith("\"")) return ParseJsonStringDouble(aJSON);
-        if (aJSON.StartsWith("'")) return ParseJsonStringSingle(aJSON);
-        //if (aJSON.StartsWith("@")) return aJSON.Substring(1);
-        return aJSON;
+        if (aJson.StartsWith("\"")) return ParseJsonStringDouble(aJson);
+        return aJson.StartsWith("'") ? ParseJsonStringSingle(aJson) :
+            aJson;
     }
-    public static string ParseJsonStringSingle(string aJSON)
+    // ReSharper disable once MemberCanBePrivate.Global
+    public static string ParseJsonStringSingle(string aJson)
     {
         int i = 0;
-        StringBuilder Token = new StringBuilder();
-        bool QuoteMode = false;
-        while (i < aJSON.Length)
+        StringBuilder token = new StringBuilder();
+        bool quoteMode = false;
+        while (i < aJson.Length)
         {
-            switch (aJSON[i])
+            switch (aJson[i])
             {
 
                 case '\'':
-                    QuoteMode ^= true;
+                    quoteMode ^= true;
                     break;
 
                 case '\r':
@@ -62,43 +65,43 @@ public class EasyLanguageParser
 
                 case ' ':
                 case '\t':
-                    if (QuoteMode)
-                        Token.Append(aJSON[i]);
+                    if (quoteMode)
+                        token.Append(aJson[i]);
                     break;
 
                 case '\\':
                     ++i;
-                    if (QuoteMode)
+                    if (quoteMode)
                     {
-                        char C = aJSON[i];
-                        switch (C)
+                        char c = aJson[i];
+                        switch (c)
                         {
                             case 't':
-                                Token.Append('\t');
+                                token.Append('\t');
                                 break;
                             case 'r':
-                                Token.Append('\r');
+                                token.Append('\r');
                                 break;
                             case 'n':
-                                Token.Append('\n');
+                                token.Append('\n');
                                 break;
                             case 'b':
-                                Token.Append('\b');
+                                token.Append('\b');
                                 break;
                             case 'f':
-                                Token.Append('\f');
+                                token.Append('\f');
                                 break;
                             case 'u':
                                 {
-                                    string s = aJSON.Substring(i + 1, 4);
-                                    Token.Append((char)int.Parse(
+                                    string s = aJson.Substring(i + 1, 4);
+                                    token.Append((char)int.Parse(
                                         s,
                                         System.Globalization.NumberStyles.AllowHexSpecifier));
                                     i += 4;
                                     break;
                                 }
                             default:
-                                Token.Append(C);
+                                token.Append(c);
                                 break;
                         }
                     }
@@ -108,29 +111,30 @@ public class EasyLanguageParser
                     break;
 
                 default:
-                    Token.Append(aJSON[i]);
+                    token.Append(aJson[i]);
                     break;
             }
             ++i;
         }
-        if (QuoteMode)
+        if (quoteMode)
         {
             throw new Exception("My Parse: Quotation marks seems to be messed up.");
         }
-        return Token.ToString();
+        return token.ToString();
     }
-    public static string ParseJsonStringDouble(string aJSON)
+    // ReSharper disable once MemberCanBePrivate.Global
+    public static string ParseJsonStringDouble(string aJson)
     {
-        int i = 0;
-        StringBuilder Token = new StringBuilder();
-        bool QuoteMode = false;
-        while (i < aJSON.Length)
+        var i = 0;
+        var token = new StringBuilder();
+        var quoteMode = false;
+        while (i < aJson.Length)
         {
-            switch (aJSON[i])
+            switch (aJson[i])
             {
 
                 case '"':
-                    QuoteMode ^= true;
+                    quoteMode ^= true;
                     break;
 
                 case '\r':
@@ -139,43 +143,43 @@ public class EasyLanguageParser
 
                 case ' ':
                 case '\t':
-                    if (QuoteMode)
-                        Token.Append(aJSON[i]);
+                    if (quoteMode)
+                        token.Append(aJson[i]);
                     break;
 
                 case '\\':
                     ++i;
-                    if (QuoteMode)
+                    if (quoteMode)
                     {
-                        char C = aJSON[i];
-                        switch (C)
+                        char c = aJson[i];
+                        switch (c)
                         {
                             case 't':
-                                Token.Append('\t');
+                                token.Append('\t');
                                 break;
                             case 'r':
-                                Token.Append('\r');
+                                token.Append('\r');
                                 break;
                             case 'n':
-                                Token.Append('\n');
+                                token.Append('\n');
                                 break;
                             case 'b':
-                                Token.Append('\b');
+                                token.Append('\b');
                                 break;
                             case 'f':
-                                Token.Append('\f');
+                                token.Append('\f');
                                 break;
                             case 'u':
                                 {
-                                    string s = aJSON.Substring(i + 1, 4);
-                                    Token.Append((char)int.Parse(
+                                    string s = aJson.Substring(i + 1, 4);
+                                    token.Append((char)int.Parse(
                                         s,
                                         System.Globalization.NumberStyles.AllowHexSpecifier));
                                     i += 4;
                                     break;
                                 }
                             default:
-                                Token.Append(C);
+                                token.Append(c);
                                 break;
                         }
                     }
@@ -185,19 +189,15 @@ public class EasyLanguageParser
                     break;
 
                 default:
-                    Token.Append(aJSON[i]);
+                    token.Append(aJson[i]);
                     break;
             }
             ++i;
         }
-        if (QuoteMode)
-        {
-            throw new Exception("My Parse: Quotation marks seems to be messed up.");
-        }
-        return Token.ToString();
+        return quoteMode ? throw new Exception("My Parse: Quotation marks seems to be messed up.") : token.ToString();
     }
 
-    protected static List<Rule> SkipUseless(List<Rule> rules)
+    private static List<Rule> SkipUseless(List<Rule> rules)
     {
         var result = new List<Rule>();
         if (rules != null)
@@ -219,28 +219,39 @@ public class EasyLanguageParser
         }
         return result;
     }
-    public static object RuleToObject(Rule rule, bool NumberAsDecimal)
+    // ReSharper disable once MemberCanBePrivate.Global
+    public static object RuleToObject(Rule rule, bool numberAsDecimal)
     {
         var rules = SkipUseless(rule.rules);
         if (rule is Rule_elang_text)
         {
+#if false
             foreach (var r in rules)
             {
                 //Assert.Single(rules);
-                return RuleToObject(rules[0], NumberAsDecimal);
+                return RuleToObject(rules[0], numberAsDecimal);
             }
+#else
+            // ReSharper disable once TailRecursiveCall
+            return RuleToObject(rules[0], numberAsDecimal);
+#endif
         }
         else if (rule is Rule_value)
         {
+#if false
             //Assert.Single(rules);
             foreach (var r in rules)
             {
-                return RuleToObject(rules[0], NumberAsDecimal);
+                return RuleToObject(rules[0], numberAsDecimal);
             }
+#else
+            // ReSharper disable once TailRecursiveCall
+            return RuleToObject(rules[0], numberAsDecimal);
+#endif
         }
         else if (rule is Rule_quote)
         {
-            var value = RuleToObject(rules[1], NumberAsDecimal);
+            var value = RuleToObject(rules[1], numberAsDecimal);
 #if false
             if (value is string)
                 return "string:" + (string)value;
@@ -260,22 +271,22 @@ public class EasyLanguageParser
                 result["!"] = "splice-unquote";
             else
                 result["!"] = "unquote";
-            result["?"] = RuleToObject(rules[1], NumberAsDecimal);
+            result["?"] = RuleToObject(rules[1], numberAsDecimal);
             return result;
         }
         else if (rule is Rule_deref)
         {
             var result = new Dictionary<string, object>();
             result["!"] = "deref";
-            result["?"] = RuleToObject(rules[1], NumberAsDecimal);
+            result["?"] = RuleToObject(rules[1], numberAsDecimal);
             return result;
         }
         else if (rule is Rule_metadata)
         {
             var result = new Dictionary<string, object>();
             result["!"] = "metadata";
-            result["?meta"] = RuleToObject(rules[1], NumberAsDecimal);
-            result["?data"] = RuleToObject(rules[2], NumberAsDecimal);
+            result["?meta"] = RuleToObject(rules[1], numberAsDecimal);
+            result["?data"] = RuleToObject(rules[2], numberAsDecimal);
             return result;
         }
         else if (rule is Rule_as_is)
@@ -306,7 +317,7 @@ public class EasyLanguageParser
             foreach (var r in rules)
             {
                 //Assert.True(r is Rule_value);
-                result.Add(RuleToObject(r, NumberAsDecimal));
+                result.Add(RuleToObject(r, numberAsDecimal));
             }
             return result;
         }
@@ -315,7 +326,7 @@ public class EasyLanguageParser
             var vec = new List<object>();
             foreach (var r in rules)
             {
-                vec.Add(RuleToObject(r, NumberAsDecimal));
+                vec.Add(RuleToObject(r, numberAsDecimal));
             }
             var result = new Dictionary<string, object>();
             result["!"] = "vector";
@@ -328,7 +339,7 @@ public class EasyLanguageParser
             foreach (var r in rules)
             {
                 //Assert.True(r is Rule_member);
-                var pair = (KeyValuePair<string, object>)RuleToObject(r, NumberAsDecimal);
+                var pair = (KeyValuePair<string, object>)RuleToObject(r, numberAsDecimal);
                 result[pair.Key] = pair.Value;
             }
             return result;
@@ -338,8 +349,8 @@ public class EasyLanguageParser
             string name = null;
             foreach (var r in rules)
             {
-                if (r is Rule_member_name) name = (string)RuleToObject(r, NumberAsDecimal);
-                if (r is Rule_value) return new KeyValuePair<string, object>(name, RuleToObject(r, NumberAsDecimal));
+                if (r is Rule_member_name) name = (string)RuleToObject(r, numberAsDecimal);
+                if (r is Rule_value) return new KeyValuePair<string, object>(name, RuleToObject(r, numberAsDecimal));
             }
         }
         else if (rule is Rule_member_name)
@@ -347,7 +358,7 @@ public class EasyLanguageParser
 #if true
             foreach (var r in rules)
             {
-                object result = RuleToObject(r, NumberAsDecimal);
+                object result = RuleToObject(r, numberAsDecimal);
                 if (result is string) return result;
                 if (result is Dictionary<string, object>) return (result as Dictionary<string, object>)["?"];
             }
@@ -379,7 +390,7 @@ public class EasyLanguageParser
 #endif
         else if (rule is Rule_number)
         {
-            if (NumberAsDecimal)
+            if (numberAsDecimal)
                 return decimal.Parse(rule.spelling);
             return double.Parse(rule.spelling);
         }

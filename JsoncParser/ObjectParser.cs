@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 
+// ReSharper disable once CheckNamespace
 namespace Global;
 
 public interface IObjectWrapper
@@ -19,14 +20,14 @@ public class RedundantObject
 {
 }
 
-internal static class _ObjectParserUtil
+internal static class ObjectParserUtil
 {
     public static string GetMemberName(MemberInfo member)
     {
         if (member.IsDefined(typeof(DataMemberAttribute), true))
         {
-            DataMemberAttribute dataMemberAttribute = (DataMemberAttribute)Attribute.GetCustomAttribute(member, typeof(DataMemberAttribute), true);
-            if (!string.IsNullOrEmpty(dataMemberAttribute.Name))
+            var dataMemberAttribute = (DataMemberAttribute)Attribute.GetCustomAttribute(member, typeof(DataMemberAttribute), true);
+            if (!string.IsNullOrEmpty(dataMemberAttribute!.Name))
                 return dataMemberAttribute.Name;
         }
 
@@ -41,15 +42,15 @@ public class ObjectParser: IObjectConverter
         return x;
     }
 
-    bool ForceASCII;
+    private readonly bool forceAscii;
     IObjectConverter oc;
-    public ObjectParser(bool ForceASCII = false, IObjectConverter oc = null)
+    public ObjectParser(bool forceAscii = false, IObjectConverter oc = null)
     {
-        this.ForceASCII = ForceASCII;
+        this.forceAscii = forceAscii;
         if (oc == null) oc = this;
         this.oc = oc;
     }
-    public static string ToPrintable(bool ShowDetail, object x, string title = null)
+    public static string ToPrintable(bool showDetail, object x, string title = null)
     {
         ObjectParser op = new ObjectParser(false);
         if (x is IObjectWrapper)
@@ -61,7 +62,7 @@ public class ObjectParser: IObjectConverter
         if (x is null) return s + "null";
         if (x is string)
         {
-            if (!ShowDetail) return s + (string)x;
+            if (!showDetail) return s + (string)x;
             return s + "`" + (string)x + "`";
         }
         string output = null;
@@ -73,16 +74,17 @@ public class ObjectParser: IObjectConverter
         {
             output = x.ToString();
         }
-        if (!ShowDetail) return s + output;
+        if (!showDetail) return s + output;
         return s + $"<{FullName(x)}> {output}";
     }
+    // ReSharper disable once MemberCanBePrivate.Global
     public static string FullName(dynamic x)
     {
         if (x is null) return "null";
         string fullName = ((object)x).GetType().FullName;
-        return fullName.Split('`')[0];
+        return fullName!.Split('`')[0];
     }
-    public object Parse(object x, bool NumberAsDecimal = false)
+    public object Parse(object x, bool numberAsDecimal = false)
     {
         string origTypeName = FullName(x);
         if (x is IObjectWrapper)
@@ -113,7 +115,7 @@ public class ObjectParser: IObjectConverter
             || type == typeof(double)
             || type == typeof(decimal))
         {
-            if (NumberAsDecimal)
+            if (numberAsDecimal)
                 return oc.ConvertResult(Convert.ToDecimal(x), origTypeName);
             return oc.ConvertResult(Convert.ToDouble(x), origTypeName);
         }
@@ -152,7 +154,7 @@ public class ObjectParser: IObjectConverter
             var result = new Dictionary<string, object>();
             foreach (var key in dic.Keys)
             {
-                result[key] = Parse(dic[key], NumberAsDecimal);
+                result[key] = Parse(dic[key], numberAsDecimal);
             }
             return oc.ConvertResult(result, origTypeName);
         }
@@ -162,7 +164,7 @@ public class ObjectParser: IObjectConverter
             var result = new List<object>();
             for (int i = 0; i < list.Count; i++)
             {
-                result.Add(Parse(list[i], NumberAsDecimal));
+                result.Add(Parse(list[i], numberAsDecimal));
             }
             return oc.ConvertResult(result, origTypeName);
         }
@@ -173,7 +175,7 @@ public class ObjectParser: IObjectConverter
             foreach (object key in ht.Keys)
             {
                 if (!(key is string)) continue;
-                result.Add((string)key, Parse(ht[key], NumberAsDecimal));
+                result.Add((string)key, Parse(ht[key], numberAsDecimal));
             }
             return oc.ConvertResult(result, origTypeName);
         }
@@ -189,7 +191,7 @@ public class ObjectParser: IObjectConverter
             IDictionary dict = x as IDictionary;
             foreach (object key in dict.Keys)
             {
-                result[(string)key] = Parse(dict[key], NumberAsDecimal);
+                result[(string)key] = Parse(dict[key], numberAsDecimal);
             }
             return oc.ConvertResult(result, origTypeName);
         }
@@ -201,7 +203,7 @@ public class ObjectParser: IObjectConverter
             while (e.MoveNext())
             {
                 object o = e.Current;
-                result.Add(Parse(o, NumberAsDecimal));
+                result.Add(Parse(o, numberAsDecimal));
             }
             return oc.ConvertResult(result, origTypeName);
         }
@@ -214,7 +216,7 @@ public class ObjectParser: IObjectConverter
                 if (fieldInfos[i].IsDefined(typeof(IgnoreDataMemberAttribute), true))
                     continue;
                 object value = fieldInfos[i].GetValue(x);
-                result[_ObjectParserUtil.GetMemberName(fieldInfos[i])] = Parse(value);
+                result[ObjectParserUtil.GetMemberName(fieldInfos[i])] = Parse(value);
             }
             PropertyInfo[] propertyInfo = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
             for (int i = 0; i < propertyInfo.Length; i++)
@@ -222,7 +224,7 @@ public class ObjectParser: IObjectConverter
                 if (!propertyInfo[i].CanRead || propertyInfo[i].IsDefined(typeof(IgnoreDataMemberAttribute), true))
                     continue;
                 object value = propertyInfo[i].GetValue(x, null);
-                result[_ObjectParserUtil.GetMemberName(propertyInfo[i])] = Parse(value);
+                result[ObjectParserUtil.GetMemberName(propertyInfo[i])] = Parse(value);
             }
             return oc.ConvertResult(result, origTypeName);
         }
@@ -230,7 +232,7 @@ public class ObjectParser: IObjectConverter
     public string Stringify(object x, bool indent, bool sort_keys = false)
     {
         StringBuilder sb = new StringBuilder();
-        new _JsonStringBuilder(this.ForceASCII, indent, sort_keys).WriteToSB(sb, x, 0);
+        new _JsonStringBuilder(this.forceAscii, indent, sort_keys).WriteToSb(sb, x, 0);
         string json = sb.ToString();
         return json;
     }
@@ -238,19 +240,19 @@ public class ObjectParser: IObjectConverter
 
 internal class _JsonStringBuilder
 {
-    bool ForceASCII = false;
-    bool IndentJson = false;
-    bool SortKeys = false;
-    public _JsonStringBuilder(bool ForceASCII, bool IndentJson, bool sort_keys)
+    private readonly bool forceAscii = false;
+    private readonly bool indentJson = false;
+    private readonly bool sortKeys = false;
+    public _JsonStringBuilder(bool forceAscii, bool indentJson, bool sortKeys)
     {
-        this.ForceASCII = ForceASCII;
-        this.IndentJson = IndentJson;
-        this.SortKeys = sort_keys;
+        this.forceAscii = forceAscii;
+        this.indentJson = indentJson;
+        this.sortKeys = sortKeys;
     }
 
-    void Indent(StringBuilder sb/*, bool indent*/, int level)
+    private void Indent(StringBuilder sb/*, bool indent*/, int level)
     {
-        if (this.IndentJson)
+        if (this.indentJson)
         {
             for (int i = 0; i < level; i++)
             {
@@ -259,6 +261,7 @@ internal class _JsonStringBuilder
         }
     }
 
+    // ReSharper disable once MemberCanBePrivate.Global
     public static Type GetGenericIDictionaryType(Type type)
     {
         if (type == null) return null;
@@ -272,7 +275,8 @@ internal class _JsonStringBuilder
         }
         return null;
     }
-    public void WriteProcessGenericIDictionaryToSB<T>(StringBuilder sb, System.Collections.Generic.IDictionary<string, T> dict/*, bool indent*/, int level)
+
+    private void WriteProcessGenericIDictionaryToSb<T>(StringBuilder sb, System.Collections.Generic.IDictionary<string, T> dict/*, bool indent*/, int level)
     {
         sb.Append("{");
         int count = 0;
@@ -282,30 +286,30 @@ internal class _JsonStringBuilder
                        select a;
 #else
         var keys = from a in dict.Keys select a;
-        if (this.SortKeys)
+        if (this.sortKeys)
             keys = from a in dict.Keys orderby a select a;
 #endif
         foreach (string key in keys/*dict.Keys*/)
         {
-            if (count == 0 && this.IndentJson) sb.Append('\n');
+            if (count == 0 && this.indentJson) sb.Append('\n');
             if (count > 0)
             {
                 sb.Append(",");
-                if (this.IndentJson) sb.Append('\n');
+                if (this.indentJson) sb.Append('\n');
             }
-            WriteToSB(sb, (string)key, level + 1);
-            sb.Append(this.IndentJson ? ": " : ":");
-            WriteToSB(sb, dict[key], level + 1, true);
+            WriteToSb(sb, (string)key, level + 1);
+            sb.Append(this.indentJson ? ": " : ":");
+            WriteToSb(sb, dict[key], level + 1, true);
             count++;
         }
-        if (count > 0 && this.IndentJson)
+        if (count > 0 && this.indentJson)
         {
             sb.Append('\n');
             Indent(sb, level);
         }
         sb.Append("}");
     }
-    public void WriteToSB(StringBuilder sb, object x/*, bool indent*/, int level, bool cancelIndent = false)
+    public void WriteToSb(StringBuilder sb, object x/*, bool indent*/, int level, bool cancelIndent = false)
     {
         if (!cancelIndent) Indent(sb, level);
 
@@ -351,30 +355,30 @@ internal class _JsonStringBuilder
             switch(dt.Kind)
             {
                 case DateTimeKind.Local:
-                    WriteToSB(sb, dt.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffffzzz"), level, cancelIndent);
+                    WriteToSb(sb, dt.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffffzzz"), level, cancelIndent);
                     break;
                 case DateTimeKind.Utc:
-                    WriteToSB(sb, dt.ToString("o"), level, cancelIndent);
+                    WriteToSb(sb, dt.ToString("o"), level, cancelIndent);
                     break;
                 default: //case DateTimeKind.Unspecified:
-                    WriteToSB(sb, dt.ToString("o").Replace("Z", ""), level, cancelIndent);
+                    WriteToSb(sb, dt.ToString("o").Replace("Z", ""), level, cancelIndent);
                     break;
             }
             return;
         }
         else if (type == typeof(TimeSpan))
         {
-            WriteToSB(sb, x.ToString(), level, cancelIndent);
+            WriteToSb(sb, x.ToString(), level, cancelIndent);
             return;
         }
         else if (type == typeof(Guid))
         {
-            WriteToSB(sb, x.ToString(), level, cancelIndent);
+            WriteToSb(sb, x.ToString(), level, cancelIndent);
             return;
         }
         else if (type.IsEnum)
         {
-            WriteToSB(sb, x.ToString(), level, cancelIndent);
+            WriteToSb(sb, x.ToString(), level, cancelIndent);
             return;
         }
         else if (x is ExpandoObject)
@@ -385,7 +389,7 @@ internal class _JsonStringBuilder
             {
                 result[key] = dic[key];
             }
-            WriteToSB(sb, result, level, cancelIndent);
+            WriteToSb(sb, result, level, cancelIndent);
             return;
         }
         else if (x is IList)
@@ -397,17 +401,17 @@ internal class _JsonStringBuilder
                 return;
             }
             sb.Append('[');
-            if (this.IndentJson) sb.Append('\n');
+            if (this.indentJson) sb.Append('\n');
             for (int i = 0; i < list.Count; i++)
             {
                 if (i > 0)
                 {
                     sb.Append(",");
-                    if (this.IndentJson) sb.Append('\n');
+                    if (this.indentJson) sb.Append('\n');
                 }
-                WriteToSB(sb, list[i], level + 1);
+                WriteToSb(sb, list[i], level + 1);
             }
-            if (this.IndentJson) sb.Append('\n');
+            if (this.indentJson) sb.Append('\n');
             Indent(sb, level);
             sb.Append(']');
             return;
@@ -426,24 +430,24 @@ internal class _JsonStringBuilder
             keys = keys.Where(x => x is string).OrderBy(x => x as string).ToList();
 #else
             keys = keys.Where(x => x is string).ToList();
-            if (this.SortKeys)
+            if (this.sortKeys)
                 keys = keys.OrderBy(x => x as string).ToList();
 #endif
             foreach (object key in keys/*ht.Keys*/)
             {
                 //if (!(key is string)) continue;
-                if (count == 0 && this.IndentJson) sb.Append('\n');
+                if (count == 0 && this.indentJson) sb.Append('\n');
                 if (count > 0)
                 {
                     sb.Append(",");
-                    if (this.IndentJson) sb.Append('\n');
+                    if (this.indentJson) sb.Append('\n');
                 }
-                WriteToSB(sb, (string)key, level + 1);
-                sb.Append(this.IndentJson ? ": " : ":");
-                WriteToSB(sb, ht[key], level + 1, true);
+                WriteToSb(sb, (string)key, level + 1);
+                sb.Append(this.indentJson ? ": " : ":");
+                WriteToSb(sb, ht[key], level + 1, true);
                 count++;
             }
-            if (count > 0 && this.IndentJson)
+            if (count > 0 && this.indentJson)
             {
                 sb.Append('\n');
                 Indent(sb, level);
@@ -460,7 +464,7 @@ internal class _JsonStringBuilder
                 sb.Append("{}");
                 return;
             }
-            WriteProcessGenericIDictionaryToSB(sb, (dynamic)x, level);
+            WriteProcessGenericIDictionaryToSb(sb, (dynamic)x, level);
 
             return;
         }
@@ -474,7 +478,7 @@ internal class _JsonStringBuilder
                 object o = e.Current;
                 result.Add(o);
             }
-            WriteToSB(sb, result, level, cancelIndent);
+            WriteToSb(sb, result, level, cancelIndent);
         }
         else
         {
@@ -490,15 +494,15 @@ internal class _JsonStringBuilder
                 {
                     if (value == null) continue;
                 }
-                if (count == 0 && this.IndentJson) sb.Append('\n');
+                if (count == 0 && this.indentJson) sb.Append('\n');
                 if (count > 0)
                 {
                     sb.Append(",");
-                    if (this.IndentJson) sb.Append('\n');
+                    if (this.indentJson) sb.Append('\n');
                 }
-                WriteToSB(sb, _ObjectParserUtil.GetMemberName(fieldInfos[i]), level + 1);
-                sb.Append(this.IndentJson ? ": " : ":");
-                WriteToSB(sb, value, level + 1, true);
+                WriteToSb(sb, ObjectParserUtil.GetMemberName(fieldInfos[i]), level + 1);
+                sb.Append(this.indentJson ? ": " : ":");
+                WriteToSb(sb, value, level + 1, true);
                 count++;
             }
             PropertyInfo[] propertyInfo = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
@@ -511,18 +515,18 @@ internal class _JsonStringBuilder
                 {
                     if (value == null) continue;
                 }
-                if (count == 0 && this.IndentJson) sb.Append('\n');
+                if (count == 0 && this.indentJson) sb.Append('\n');
                 if (count > 0)
                 {
                     sb.Append(",");
-                    if (this.IndentJson) sb.Append('\n');
+                    if (this.indentJson) sb.Append('\n');
                 }
-                WriteToSB(sb, _ObjectParserUtil.GetMemberName(propertyInfo[i]), level + 1);
-                sb.Append(this.IndentJson ? ": " : ":");
-                WriteToSB(sb, value, level + 1, true);
+                WriteToSb(sb, ObjectParserUtil.GetMemberName(propertyInfo[i]), level + 1);
+                sb.Append(this.indentJson ? ": " : ":");
+                WriteToSb(sb, value, level + 1, true);
                 count++;
             }
-            if (count > 0 && this.IndentJson)
+            if (count > 0 && this.indentJson)
             {
                 sb.Append('\n');
                 Indent(sb, level);
@@ -531,7 +535,8 @@ internal class _JsonStringBuilder
             return;
         }
     }
-    string Escape(string aText /*, bool ForceASCII*/)
+
+    private string Escape(string aText /*, bool ForceASCII*/)
     {
         var sb = new StringBuilder();
         sb.Length = 0;
@@ -563,7 +568,7 @@ internal class _JsonStringBuilder
                     sb.Append("\\f");
                     break;
                 default:
-                    if (c < ' ' || (ForceASCII && c > 127))
+                    if (c < ' ' || (forceAscii && c > 127))
                     {
                         ushort val = c;
                         sb.Append("\\u").Append(val.ToString("X4"));
