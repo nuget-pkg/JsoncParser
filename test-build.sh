@@ -7,6 +7,9 @@ ts=`date "+%Y.%m%d.%H%M.%S"`
 version="${ts}"
 
 cd $cwd
+cp README.md JsoncParser/
+
+cd $cwd
 find . -name bin -exec rm -rf {} +
 find . -name obj -exec rm -rf {} +
 
