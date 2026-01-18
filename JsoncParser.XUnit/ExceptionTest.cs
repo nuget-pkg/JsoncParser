@@ -2,7 +2,7 @@
 using Xunit.Abstractions;
 //using MyJson;
 //using static MyJson.MyData;
-using static Global.SharpJson;
+using static Global.EasyObjectClassic;
 using System;
 using Global;
 
@@ -12,18 +12,18 @@ public class ExceptionTest
     public ExceptionTest(ITestOutputHelper testOutputHelper)
     {
         Out = testOutputHelper;
-        SharpJson.ClearAllSettings();
+        EasyObjectClassic.ClearSettings();
         Print("Setup() called");
     }
     private void Print(object x, string title = null)
     {
-        Out.WriteLine(SharpJson.ToPrintable(x, title));
+        Out.WriteLine(EasyObjectClassic.ToPrintable(x, title));
     }
     [Fact]
     public void Test01()
     {
         ShowDetail = true;
-        var o1 = Global.StrictJsonParser.Parse("""
+        var o1 = Global.EasyObjectClassic.FromJson("""
             { "a": 123 }
             """);
         Echo(o1, "o1");

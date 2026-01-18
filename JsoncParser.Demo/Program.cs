@@ -6,7 +6,7 @@ using System.IO;
 using System.Web.UI.WebControls;
 using Xunit;
 //using static MyJson.MyData;
-using static Global.SharpJson;
+using static Global.EasyObjectClassic;
 namespace Main;
 
 
@@ -105,9 +105,5 @@ static class Program
         var t3 = new ObjectParser(false).Parse(
             new { x = 123, y = 4567 });
         Echo(t3, "t3");
-        Console.WriteLine(JsoncTester.DeepEquals(t1, t2));
-        Console.WriteLine(JsoncTester.DeepEquals(t1, t3));
-        Console.WriteLine(JsoncTester.JsonEquals(new ObjectParser(false).Stringify(t1, false), new ObjectParser(false).Stringify(t2, false)));
-        Console.WriteLine(JsoncTester.JsonEquals(new ObjectParser(false).Stringify(t1, false), new ObjectParser(false).Stringify(t3, false)));
     }
 }

@@ -1,7 +1,7 @@
 ﻿#if true
 //using MyJson;
 //using static MyJson.MyData;
-using static Global.SharpJson;
+using static Global.EasyObjectClassic;
 using Xunit;
 using Xunit.Abstractions;
 using Global;
@@ -14,12 +14,12 @@ public class Elang1Test1
     public Elang1Test1(ITestOutputHelper testOutputHelper)
     {
         Out = testOutputHelper;
-        SharpJson.ClearAllSettings();
+        EasyObjectClassic.ClearSettings();
         Print("Setup() called");
     }
     private void Print(object x, string title = null)
     {
-        Out.WriteLine(SharpJson.ToPrintable(x, title));
+        Out.WriteLine(EasyObjectClassic.ToPrintable(x, title));
     }
     [Fact]
     public void Test01()

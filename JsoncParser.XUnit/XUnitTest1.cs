@@ -1,11 +1,12 @@
 ﻿//using MyJson;
 //using static MyJson.MyData;
-using static Global.SharpJson;
+using static Global.EasyObjectClassic;
 using Xunit;
 using Xunit.Abstractions;
 using Global;
 using System;
 using System.Collections;
+using Microsoft.SqlServer.Server;
 
 public class XUnitTest1
 {
@@ -13,12 +14,16 @@ public class XUnitTest1
     public XUnitTest1(ITestOutputHelper testOutputHelper)
     {
         Out = testOutputHelper;
-        SharpJson.ClearAllSettings();
+        EasyObjectClassic.ClearSettings();
         Print("Setup() called");
     }
     private void Print(object x, string title = null)
     {
-        Out.WriteLine(SharpJson.ToPrintable(x, title));
+        Out.WriteLine(EasyObjectClassic.ToPrintable(x, title));
+    }
+    private string ToJson(object x, bool indent = false)
+    {
+        return EasyObjectClassic.FromObject(x).ToJson(indent: indent);
     }
     [Fact]
     public void Test01()

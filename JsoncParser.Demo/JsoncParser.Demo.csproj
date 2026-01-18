@@ -38,8 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <!--<PackageReference Include="MyJson" Version="2024.503.1910.41" />-->
-    <PackageReference Include="SharpJson" Version="2024.505.1116.19" />
-    <PackageReference Include="JsoncTester" Version="2024.1114.2117.30" />
+    <PackageReference Include="EasyObjectClassic" Version="2026.118.2050.55" />
     <PackageReference Include="xunit" Version="2.8.0" />
     <PackageReference Include="Razorvine.Pickle" Version="1.5.0" />
   </ItemGroup>
