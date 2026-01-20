@@ -2,7 +2,7 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFrameworks>netstandard2.0;net462;net8.0</TargetFrameworks>
-    <Version>2026.0118.2107.24</Version>
+    <Version>2026.0120.1940.37</Version>
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <RootNamespace>JsoncParser</RootNamespace>
@@ -51,5 +51,8 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 	<PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="PlainObjectConverter" Version="2026.120.1847.13" />
   </ItemGroup>
 </Project>

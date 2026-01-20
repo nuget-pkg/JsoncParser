@@ -9,12 +9,12 @@ namespace Global;
 public class CSharpEasyLanguageHandler: IJsonHandler
 {
     private readonly EasyLanguageParser jsonParser;
-    private readonly ObjectParser objParser;
+    private readonly PlainObjectConverter objParser;
     // ReSharper disable once ConvertToPrimaryConstructor
     public CSharpEasyLanguageHandler(bool numberAsDecimal, bool forceAscii)
     {
         this.jsonParser = new EasyLanguageParser(numberAsDecimal);
-        this.objParser = new ObjectParser(forceAscii);
+        this.objParser = new PlainObjectConverter(forceAscii);
     }
     public object Parse(string json)
     {

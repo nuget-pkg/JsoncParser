@@ -8,12 +8,12 @@ namespace Global;
 public class CSharpJsonHandler: IJsonHandler
 {
     private readonly JsoncParser jsonParser;
-    private readonly ObjectParser objParser;
+    private readonly PlainObjectConverter objParser;
     // ReSharper disable once ConvertToPrimaryConstructor
     public CSharpJsonHandler(bool numberAsDecimal, bool forceAscii)
     {
         this.jsonParser = new JsoncParser(numberAsDecimal);
-        this.objParser = new ObjectParser(forceAscii);
+        this.objParser = new PlainObjectConverter(forceAscii);
     }
     public object Parse(string json)
     {

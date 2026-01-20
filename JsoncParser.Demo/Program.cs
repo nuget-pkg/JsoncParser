@@ -66,17 +66,17 @@ static class Program
     {
         TestStrinct();
         TestJsonc();
-        var o1 = new ObjectParser(false).Parse(new { a = 123, b = new object[] { 11, 22, true, new object[] { } } });
+        var o1 = new PlainObjectConverter(false).Parse(new { a = 123, b = new object[] { 11, 22, true, new object[] { } } });
         Echo(o1, "o1");
-        Console.WriteLine(ObjectParser.ToPrintable(true, o1, "o1(printable)"));
-        string json1 = new ObjectParser(false).Stringify(o1, false);
+        Console.WriteLine(PlainObjectConverter.ToPrintable(true, o1, "o1(printable)"));
+        string json1 = new PlainObjectConverter(false).Stringify(o1, false);
         Echo(json1, "json1");
-        string json2 = new ObjectParser(false).Stringify(o1, true);
+        string json2 = new PlainObjectConverter(false).Stringify(o1, true);
         Echo(json2, "json2");
         var o2 = JsoncParser.Parse("""
             [11, 22, {}, 33]
             """);
-        string json3 = new ObjectParser(false).Stringify(o2, true);
+        string json3 = new PlainObjectConverter(false).Stringify(o2, true);
         Echo(json3, "json3");
         //var list01_txt = File.ReadAllText("assets/list01.txt");
         var list01_txt = File.ReadAllText("assets/mydict.txt");
@@ -88,7 +88,7 @@ static class Program
         Echo(result.GetType().ToString());
         Echo(new CSharpJsonHandler(true, false).Stringify(result, true));
         Echo(new CSharpJsonHandler(true, false).Stringify(result, true, true));
-        var o = new ObjectParser(false).Parse(result);
+        var o = new PlainObjectConverter(false).Parse(result);
         Echo(new CSharpJsonHandler(true, false).Stringify(o, true));
         Echo(new CSharpJsonHandler(true, false).Stringify(o, true, true));
         var pickler = new Pickler();
@@ -96,13 +96,13 @@ static class Program
         var ox = unpickler.loads(bytes);
         Echo(new CSharpJsonHandler(true, false).Stringify(ox, true));
         Echo(new CSharpJsonHandler(true, false).Stringify(ox, true, true));
-        var t1 = new ObjectParser(false).Parse(
+        var t1 = new PlainObjectConverter(false).Parse(
             new { x = 123, y = 456 });
         Echo(t1, "t1");
-        var t2 = new ObjectParser(false).Parse(
+        var t2 = new PlainObjectConverter(false).Parse(
             new { y = 456, x = 123 });
         Echo(t2, "t2");
-        var t3 = new ObjectParser(false).Parse(
+        var t3 = new PlainObjectConverter(false).Parse(
             new { x = 123, y = 4567 });
         Echo(t3, "t3");
     }

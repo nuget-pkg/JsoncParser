@@ -75,29 +75,29 @@ public class XUnitTest1
     public void Test03()
     {
         ShowDetail = true;
-        var o1 = new Global.ObjectParser(false).Parse("helloハロー©");
+        var o1 = new Global.PlainObjectConverter(false).Parse("helloハロー©");
         Echo(o1, "o1");
-        var json = new Global.ObjectParser(false).Stringify(o1, false);
+        var json = new Global.PlainObjectConverter(false).Stringify(o1, false);
         Assert.Equal("""
             "helloハロー©"
             """, json);
-        json = new Global.ObjectParser(true).Stringify(o1, false); // ForceASII
+        json = new Global.PlainObjectConverter(true).Stringify(o1, false); // ForceASII
         Assert.Equal("""
             "hello\u30CF\u30ED\u30FC\u00A9"
             """, json);
     }
-    [Fact]
-    public void Test04()
-    {
-        ShowDetail = true;
-        var o1 = new MyRedundant();
-        Echo(o1, "o1");
-        var json = new ObjectParser(false).Stringify(o1, false);
-        Echo(json, "json");
-        Assert.Equal("""
-            {"Ok":"ok"}
-            """, json);
-    }
+    //[Fact]
+    //public void Test04()
+    //{
+    //    ShowDetail = true;
+    //    var o1 = new MyRedundant();
+    //    Echo(o1, "o1");
+    //    var json = new PlainObjectConverter(false).Stringify(o1, false);
+    //    Echo(json, "json");
+    //    Assert.Equal("""
+    //        {"Ok":"ok"}
+    //        """, json);
+    //}
     [Fact]
     public void Test05()
     {
@@ -108,23 +108,23 @@ public class XUnitTest1
             """);
         Assert.Equal("""
             "ab'\"c"
-            """, new ObjectParser(false).Stringify(o, false));
+            """, new PlainObjectConverter(false).Stringify(o, false));
         o = JsoncParser.Parse("""
             'ab\'"c'
             """);
         Assert.Equal("""
             "ab'\"c"
-            """, new ObjectParser(false).Stringify(o, false));
+            """, new PlainObjectConverter(false).Stringify(o, false));
         o = JsoncParser.Parse("""
             { a: 'ab\'"c' }
             """);
         Assert.Equal("""
             {"a":"ab'\"c"}
-            """, new ObjectParser(false).Stringify(o, false));
+            """, new PlainObjectConverter(false).Stringify(o, false));
     }
-    public class MyRedundant : RedundantObject
-    {
-        public string Null = null;
-        public string Ok = "ok";
-    }
+    //public class MyRedundant : RedundantObject
+    //{
+    //    public string Null = null;
+    //    public string Ok = "ok";
+    //}
 }
