@@ -71,21 +71,21 @@ public class XUnitTest1
             {"a":123}
             """, ToJson(o6));
     }
-    [Fact]
-    public void Test03()
-    {
-        ShowDetail = true;
-        var o1 = new Global.PlainObjectConverter(false).Parse("helloハロー©");
-        Echo(o1, "o1");
-        var json = new Global.PlainObjectConverter(false).Stringify(o1, false);
-        Assert.Equal("""
-            "helloハロー©"
-            """, json);
-        json = new Global.PlainObjectConverter(true).Stringify(o1, false); // ForceASII
-        Assert.Equal("""
-            "hello\u30CF\u30ED\u30FC\u00A9"
-            """, json);
-    }
+    // [Fact]
+    // public void Test03()
+    // {
+    //     ShowDetail = true;
+    //     var o1 = new Global.PlainObjectConverter(false).Parse("helloハロー©");
+    //     Echo(o1, "o1");
+    //     var json = new Global.PlainObjectConverter(false).Stringify(o1, false);
+    //     Assert.Equal("""
+    //         "helloハロー©"
+    //         """, json);
+    //     json = new Global.PlainObjectConverter(true).Stringify(o1, false); // ForceASII
+    //     Assert.Equal("""
+    //         "hello\u30CF\u30ED\u30FC\u00A9"
+    //         """, json);
+    // }
     //[Fact]
     //public void Test04()
     //{
@@ -98,30 +98,30 @@ public class XUnitTest1
     //        {"Ok":"ok"}
     //        """, json);
     //}
-    [Fact]
-    public void Test05()
-    {
-        ShowDetail = true;
-        object o;
-        o = JsoncParser.Parse("""
-            "ab'\"c"
-            """);
-        Assert.Equal("""
-            "ab'\"c"
-            """, new PlainObjectConverter(false).Stringify(o, false));
-        o = JsoncParser.Parse("""
-            'ab\'"c'
-            """);
-        Assert.Equal("""
-            "ab'\"c"
-            """, new PlainObjectConverter(false).Stringify(o, false));
-        o = JsoncParser.Parse("""
-            { a: 'ab\'"c' }
-            """);
-        Assert.Equal("""
-            {"a":"ab'\"c"}
-            """, new PlainObjectConverter(false).Stringify(o, false));
-    }
+    // [Fact]
+    // public void Test05()
+    // {
+    //     ShowDetail = true;
+    //     object o;
+    //     o = JsoncParser.Parse("""
+    //         "ab'\"c"
+    //         """);
+    //     Assert.Equal("""
+    //         "ab'\"c"
+    //         """, new PlainObjectConverter(false).Stringify(o, false));
+    //     o = JsoncParser.Parse("""
+    //         'ab\'"c'
+    //         """);
+    //     Assert.Equal("""
+    //         "ab'\"c"
+    //         """, new PlainObjectConverter(false).Stringify(o, false));
+    //     o = JsoncParser.Parse("""
+    //         { a: 'ab\'"c' }
+    //         """);
+    //     Assert.Equal("""
+    //         {"a":"ab'\"c"}
+    //         """, new PlainObjectConverter(false).Stringify(o, false));
+    // }
     //public class MyRedundant : RedundantObject
     //{
     //    public string Null = null;

@@ -1,28 +1,22 @@
-﻿#if true
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-// ReSharper disable once CheckNamespace
+﻿// ReSharper disable once CheckNamespace
 namespace Global;
 
-public class CSharpEasyLanguageHandler: IJsonHandler
+public class CSharpEasyLanguageHandler: IParseJson
 {
     private readonly EasyLanguageParser jsonParser;
-    private readonly PlainObjectConverter objParser;
+    //private readonly PlainObjectConverter objParser;
     // ReSharper disable once ConvertToPrimaryConstructor
-    public CSharpEasyLanguageHandler(bool numberAsDecimal, bool forceAscii)
+    public CSharpEasyLanguageHandler(bool numberAsDecimal)
     {
         this.jsonParser = new EasyLanguageParser(numberAsDecimal);
-        this.objParser = new PlainObjectConverter(forceAscii);
+        //this.objParser = new PlainObjectConverter(forceAscii);
     }
-    public object Parse(string json)
+    public object ParseJson(string json)
     {
         return this.jsonParser.ParseJson(json);
     }
-    public string Stringify(object x, bool indent, bool sortKeys = false)
-    {
-        return this.objParser.Stringify(x, indent, sortKeys);
-    }
+    // public string Stringify(object x, bool indent, bool sortKeys = false)
+    // {
+    //     return this.objParser.Stringify(x, indent, sortKeys);
+    // }
 }
-#endif

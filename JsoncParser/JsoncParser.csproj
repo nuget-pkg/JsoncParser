@@ -2,7 +2,7 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFrameworks>netstandard2.0;net462;net8.0</TargetFrameworks>
-    <Version>2026.0120.1940.37</Version>
+    <Version>2026.0122.1022.34</Version>
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <RootNamespace>JsoncParser</RootNamespace>
@@ -53,6 +53,6 @@
 	<PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="PlainObjectConverter" Version="2026.120.1847.13" />
+    <PackageReference Include="CommonJsonInterface" Version="2026.122.1008.12" />
   </ItemGroup>
 </Project>
