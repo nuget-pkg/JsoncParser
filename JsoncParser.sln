@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsoncParser.Demo", "JsoncPa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsoncParser", "JsoncParser\JsoncParser.csproj", "{16C41C2D-5C65-416C-B205-5DAB0014B705}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsoncParser.XUnit", "JsoncParser.XUnit\JsoncParser.XUnit.csproj", "{BD440E1F-AB7C-434B-9B0B-577CBAAAB306}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
