@@ -3,7 +3,7 @@ using Razorvine.Pickle;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Web.UI.WebControls;
+//using System.Web.UI.WebControls;
 using Xunit;
 //using static MyJson.MyData;
 using static Global.EasyObjectClassic;
@@ -66,6 +66,12 @@ static class Program
     {
         TestStrinct();
         TestJsonc();
+        var parser = new EasyLanguageParser(numberAsDecimal: true, removeSurrogatePair: true);
+        var result1 = parser.ParseJson("'🔥引火★★帝国🔥'");
+        Echo(result1, "result1");
+        var parser2 = new EasyLanguageParser(numberAsDecimal: true, removeSurrogatePair: false);
+        var result2 = parser2.ParseJson("'🔥引火★★帝国🔥'");
+        Echo(result2, "result2");
         // var o1 = new PlainObjectConverter(false).Parse(new { a = 123, b = new object[] { 11, 22, true, new object[] { } } });
         // Echo(o1, "o1");
         // Console.WriteLine(PlainObjectConverter.ToPrintable(true, o1, "o1(printable)"));
