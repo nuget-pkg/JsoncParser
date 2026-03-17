@@ -1,9 +1,7 @@
-﻿using Global;
+using Global;
 using System;
 using System.IO;
-//using System.Web.UI.WebControls;
 using Xunit;
-//using static MyJson.MyData;
 using static Global.EasyObjectClassic;
 namespace Main;
 
@@ -69,8 +67,8 @@ static class Program {
 
         string cljureCode01 = File.ReadAllText("assets/cljure_code01.clj");
         Echo(cljureCode01, "cljureCode01");
-        Echo(parser2.ParseMulti(cljureCode01), "cljureCode01(parsed)");
+        Echo(parser2.ParseJsonSequence(cljureCode01), "cljureCode01(parsed)");
         string cljureCode02 = File.ReadAllText("assets/cljure_code02.clj");
-        Echo(parser2.ParseMulti(cljureCode02), "cljureCode02(parsed)");
+        Echo(parser2.ParseJsonSequence(cljureCode02), "cljureCode02(parsed)");
     }
 }

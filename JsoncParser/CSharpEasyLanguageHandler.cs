@@ -1,15 +1,16 @@
-﻿// ReSharper disable once CheckNamespace
-namespace Global;
+﻿namespace Global;
 
-public class CSharpEasyLanguageHandler: IParseJson
-{
+public class CSharpEasyLanguageHandler : IParseJson {
     private readonly EasyLanguageParser jsonParser;
-    public CSharpEasyLanguageHandler(bool numberAsDecimal, bool removeSurrogatePair = false)
-    {
-        this.jsonParser = new EasyLanguageParser(numberAsDecimal, removeSurrogatePair);
+    public CSharpEasyLanguageHandler(bool numberAsDecimal, bool removeSurrogatePair = false) {
+        jsonParser = new EasyLanguageParser(numberAsDecimal, removeSurrogatePair);
     }
-    public object ParseJson(string json)
-    {
-        return this.jsonParser.ParseJson(json);
+    public object ParseJson(string json) {
+        return jsonParser.ParseJson(json);
+    }
+    public object[] ParseJsonSequence(string jsonSequenceString) {
+        object result = jsonParser.ParseJsonSequence(jsonSequenceString);
+        if (result == null) { return null; }
+        return new object[] { result };
     }
 }

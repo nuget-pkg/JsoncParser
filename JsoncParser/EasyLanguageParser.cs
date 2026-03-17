@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Global;
 
-public class EasyLanguageParser {
+public class EasyLanguageParser : IParseJson {
     private readonly bool numberAsDecimal = false;
     private readonly bool removeSurrogatePair = false;
 
@@ -14,16 +14,7 @@ public class EasyLanguageParser {
         this.numberAsDecimal = numberAsDecimal;
         this.removeSurrogatePair = removeSurrogatePair;
     }
-
     public object ParseJson(string json) {
-        return ParseFirst(json, numberAsDecimal, removeSurrogatePair);
-    }
-
-    public object ParseMulti(string json) {
-        return ParseMulti(json, numberAsDecimal, removeSurrogatePair);
-    }
-
-    public static object ParseFirst(string json, bool numberAsDecimal = false, bool removeSurrogatePair = false) {
         if (String.IsNullOrEmpty(json)) {
             return null;
         }
@@ -31,13 +22,29 @@ public class EasyLanguageParser {
         var rule = Rule_elang_one.Parse(context);
         return rule == null ? throw new ArgumentException($"Illegal JSONC: `{json}`") : RuleToObject(rule, numberAsDecimal, removeSurrogatePair);
     }
-    public static object ParseMulti(string json, bool numberAsDecimal = false, bool removeSurrogatePair = false) {
+    public object[] ParseJsonSequence(string jsonSequenceString) {
+        if (String.IsNullOrEmpty(jsonSequenceString)) {
+            return null;
+        }
+        var context = new ParserContext(jsonSequenceString, false);
+        var rule = Rule_elang_all.Parse(context);
+        var result = rule == null ? throw new ArgumentException($"Illegal JSONC: `{jsonSequenceString}`") : RuleToObject(rule, numberAsDecimal, removeSurrogatePair);
+        if (result is List<object>) {
+            return (result as List<object>).ToArray();
+        }
+        return null;
+    }
+    public static object[] ParseMulti(string json, bool numberAsDecimal = false, bool removeSurrogatePair = false) {
         if (String.IsNullOrEmpty(json)) {
             return null;
         }
         var context = new ParserContext(json, false);
         var rule = Rule_elang_all.Parse(context);
-        return rule == null ? throw new ArgumentException($"Illegal JSONC: `{json}`") : RuleToObject(rule, numberAsDecimal, removeSurrogatePair);
+        var result = rule == null ? throw new ArgumentException($"Illegal JSONC: `{json}`") : RuleToObject(rule, numberAsDecimal, removeSurrogatePair);
+        if (result is List<object>) {
+            return (result as List<object>).ToArray();
+        }
+        return null;
     }
     public static string FullName(dynamic x) {
         if (x is null) {
@@ -49,11 +56,6 @@ public class EasyLanguageParser {
     }
 
     public static string ParseJsonString(string aJson, bool removeSurrogatePair) {
-#if false
-        if (aJson.StartsWith("\"")) return ParseJsonStringDouble(aJson);
-        return aJson.StartsWith("'") ? ParseJsonStringSingle(aJson) :
-            aJson;
-#else
         string result = "?";
         if (aJson.StartsWith("\"")) {
             result = ParseJsonStringDouble(aJson);
@@ -67,7 +69,6 @@ public class EasyLanguageParser {
             result = result.Replace("{ddbea68e-d93f-4e85-92b5-83b1ace6d50f}", "★");
         }
         return result;
-#endif
     }
     public static string ParseJsonStringSingle(string aJson) {
         int i = 0;
@@ -250,7 +251,6 @@ public class EasyLanguageParser {
                 if (rule is Rule_end_vector) {
                     continue;
                 }
-                //if (rule is Terminal_StringValue) continue;
                 result.Add(rule);
             }
         }
@@ -262,7 +262,6 @@ public class EasyLanguageParser {
             return RuleToObject(rules[0], numberAsDecimal, removeSurrogatePair);
         } else if (rule is Rule_elang_all) {
             var result = new List<object>();
-            Console.Error.WriteLine($"Rule_elang_multi: {rules.Count} rules");
             foreach (var r in rules) {
                 result.Add(RuleToObject(r, numberAsDecimal, removeSurrogatePair));
             }
