@@ -1,7 +1,5 @@
 ﻿using Global;
-using Razorvine.Pickle;
 using System;
-using System.Collections.Generic;
 using System.IO;
 //using System.Web.UI.WebControls;
 using Xunit;
@@ -10,10 +8,8 @@ using static Global.EasyObjectClassic;
 namespace Main;
 
 
-static class Program
-{
-    static void TestStrinct()
-    {
+static class Program {
+    static void TestStrinct() {
         ShowDetail = true;
         var o1 = Global.StrictJsonParser.Parse("""
             { "a": 123 }
@@ -41,8 +37,7 @@ static class Program
                        123 }`
                      """.Replace("\r\n", "\n"), exception1.Message.Replace("\r\n", "\n"));
     }
-    static void TestJsonc()
-    {
+    static void TestJsonc() {
         ShowDetail = true;
         var o3 = Global.JsoncParser.Parse("""
             { 'a': 123 }
@@ -62,8 +57,7 @@ static class Program
             """);
     }
     [STAThread]
-    static void Main(string[] originalArgs)
-    {
+    static void Main(string[] originalArgs) {
         TestStrinct();
         TestJsonc();
         var parser = new EasyLanguageParser(numberAsDecimal: true, removeSurrogatePair: true);
@@ -72,44 +66,11 @@ static class Program
         var parser2 = new EasyLanguageParser(numberAsDecimal: true, removeSurrogatePair: false);
         var result2 = parser2.ParseJson("'🔥引火★★帝国🔥'");
         Echo(result2, "result2");
-        // var o1 = new PlainObjectConverter(false).Parse(new { a = 123, b = new object[] { 11, 22, true, new object[] { } } });
-        // Echo(o1, "o1");
-        // Console.WriteLine(PlainObjectConverter.ToPrintable(true, o1, "o1(printable)"));
-        // string json1 = new PlainObjectConverter(false).Stringify(o1, false);
-        // Echo(json1, "json1");
-        // string json2 = new PlainObjectConverter(false).Stringify(o1, true);
-        // Echo(json2, "json2");
-        // var o2 = JsoncParser.Parse("""
-        //     [11, 22, {}, 33]
-        //     """);
-        // string json3 = new PlainObjectConverter(false).Stringify(o2, true);
-        // Echo(json3, "json3");
-        // //var list01_txt = File.ReadAllText("assets/list01.txt");
-        // var list01_txt = File.ReadAllText("assets/mydict.txt");
-        // Echo(list01_txt);
-        // var list01_bytes = Convert.FromBase64String(list01_txt);
-        // var unpickler = new Unpickler();
-        // object result = unpickler.loads(list01_bytes);
-        // Echo(result);
-        // Echo(result.GetType().ToString());
-        // Echo(new CSharpJsonHandler(true, false).Stringify(result, true));
-        // Echo(new CSharpJsonHandler(true, false).Stringify(result, true, true));
-        // var o = new PlainObjectConverter(false).Parse(result);
-        // Echo(new CSharpJsonHandler(true, false).Stringify(o, true));
-        // Echo(new CSharpJsonHandler(true, false).Stringify(o, true, true));
-        // var pickler = new Pickler();
-        // var bytes = pickler.dumps(o);
-        // var ox = unpickler.loads(bytes);
-        // Echo(new CSharpJsonHandler(true, false).Stringify(ox, true));
-        // Echo(new CSharpJsonHandler(true, false).Stringify(ox, true, true));
-        // var t1 = new PlainObjectConverter(false).Parse(
-        //     new { x = 123, y = 456 });
-        // Echo(t1, "t1");
-        // var t2 = new PlainObjectConverter(false).Parse(
-        //     new { y = 456, x = 123 });
-        // Echo(t2, "t2");
-        // var t3 = new PlainObjectConverter(false).Parse(
-        //     new { x = 123, y = 4567 });
-        // Echo(t3, "t3");
+
+        string cljureCode01 = File.ReadAllText("assets/cljure_code01.clj");
+        Echo(cljureCode01, "cljureCode01");
+        Echo(parser2.ParseMulti(cljureCode01), "cljureCode01(parsed)");
+        string cljureCode02 = File.ReadAllText("assets/cljure_code02.clj");
+        Echo(parser2.ParseMulti(cljureCode02), "cljureCode02(parsed)");
     }
 }

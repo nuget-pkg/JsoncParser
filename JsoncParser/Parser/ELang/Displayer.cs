@@ -11,6 +11,11 @@ namespace Global.Parser.ELang {
       return VisitRules(rule.rules);
     }
 
+    public Object Visit(Rule_elang_multi rule)
+    {
+      return VisitRules(rule.rules);
+    }
+
     public Object Visit(Rule_begin_array rule)
     {
       return VisitRules(rule.rules);

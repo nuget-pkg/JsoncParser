@@ -5,6 +5,7 @@ namespace Global.Parser.ELang {
   public interface Visitor
   {
     Object Visit(Rule_elang_text rule);
+    Object Visit(Rule_elang_multi rule);
     Object Visit(Rule_begin_array rule);
     Object Visit(Rule_begin_vector rule);
     Object Visit(Rule_begin_object rule);

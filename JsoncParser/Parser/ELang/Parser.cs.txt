@@ -142,6 +142,7 @@ namespace Global.Parser.ELang {
 
       Rule rule = null;
       if (rulename.ToLower().Equals("elang-text".ToLower())) rule = Rule_elang_text.Parse(context);
+      else if (rulename.ToLower().Equals("elang-multi".ToLower())) rule = Rule_elang_multi.Parse(context);
       else if (rulename.ToLower().Equals("begin-array".ToLower())) rule = Rule_begin_array.Parse(context);
       else if (rulename.ToLower().Equals("begin-vector".ToLower())) rule = Rule_begin_vector.Parse(context);
       else if (rulename.ToLower().Equals("begin-object".ToLower())) rule = Rule_begin_object.Parse(context);

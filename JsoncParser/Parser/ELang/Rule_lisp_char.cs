@@ -50,6 +50,31 @@ namespace Global.Parser.ELang {
                 int c2 = 0;
                 for (int i2 = 0; i2 < 1 && f2; i2++)
                 {
+                  rule = Terminal_StringValue.Parse(context, "#");
+                  if ((f2 = rule != null))
+                  {
+                    a2.Add(rule, context.index);
+                    c2++;
+                  }
+                }
+                parsed = c2 == 1;
+              }
+              if (parsed)
+              {
+                as2.Add(a2);
+              }
+              context.index = s2;
+            }
+            {
+              int s2 = context.index;
+              ParserAlternative a2 = new ParserAlternative(s2);
+              parsed = true;
+              if (parsed)
+              {
+                bool f2 = true;
+                int c2 = 0;
+                for (int i2 = 0; i2 < 1 && f2; i2++)
+                {
                   rule = Terminal_StringValue.Parse(context, ".");
                   if ((f2 = rule != null))
                   {
@@ -276,6 +301,31 @@ namespace Global.Parser.ELang {
                 for (int i2 = 0; i2 < 1 && f2; i2++)
                 {
                   rule = Terminal_StringValue.Parse(context, "*");
+                  if ((f2 = rule != null))
+                  {
+                    a2.Add(rule, context.index);
+                    c2++;
+                  }
+                }
+                parsed = c2 == 1;
+              }
+              if (parsed)
+              {
+                as2.Add(a2);
+              }
+              context.index = s2;
+            }
+            {
+              int s2 = context.index;
+              ParserAlternative a2 = new ParserAlternative(s2);
+              parsed = true;
+              if (parsed)
+              {
+                bool f2 = true;
+                int c2 = 0;
+                for (int i2 = 0; i2 < 1 && f2; i2++)
+                {
+                  rule = Terminal_StringValue.Parse(context, "$");
                   if ((f2 = rule != null))
                   {
                     a2.Add(rule, context.index);

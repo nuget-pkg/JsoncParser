@@ -19,6 +19,18 @@ namespace Global.Parser.ELang {
       return null;
     }
 
+    public Object Visit(Rule_elang_multi rule)
+    {
+      if (!terminal) System.Console.WriteLine();
+      Console.Write("<elang-multi>");
+      terminal = false;
+      VisitRules(rule.rules);
+      if (!terminal) System.Console.WriteLine();
+      Console.Write("</elang-multi>");
+      terminal = false;
+      return null;
+    }
+
     public Object Visit(Rule_begin_array rule)
     {
       if (!terminal) System.Console.WriteLine();

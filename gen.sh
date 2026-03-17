@@ -33,14 +33,14 @@ cd Parser/JsonC
 ls *.cs | xargs -i sed -i "1,9d" {}
 mv Parser.cs Parser.cs.txt
 
-#cd $cwd/JsoncParser
-#rm -rf Parser/ELang
-#mkdir -p Parser/ELang	
-#java -cp aparse-2.5.jar com.parse2.aparse.Parser \
-#  -language cs \
-#  -destdir Parser/ELang \
-#  -namespace Global.Parser.ELang \
-#  elang.abnf
-#cd Parser/ELang
-#ls *.cs | xargs -i sed -i "1,9d" {}
-#mv Parser.cs Parser.cs.txt
+cd $cwd/JsoncParser
+rm -rf Parser/ELang
+mkdir -p Parser/ELang
+java -cp aparse-2.5.jar com.parse2.aparse.Parser \
+  -language cs \
+  -destdir Parser/ELang \
+  -namespace Global.Parser.ELang \
+  elang.abnf
+cd Parser/ELang
+ls *.cs | xargs -i sed -i "1,9d" {}
+mv Parser.cs Parser.cs.txt
