@@ -7,26 +7,26 @@ namespace Global.Parser.ELang {
   {
     private bool terminal = true;
 
-    public Object Visit(Rule_elang_text rule)
+    public Object Visit(Rule_elang_one rule)
     {
       if (!terminal) System.Console.WriteLine();
-      Console.Write("<elang-text>");
+      Console.Write("<elang-one>");
       terminal = false;
       VisitRules(rule.rules);
       if (!terminal) System.Console.WriteLine();
-      Console.Write("</elang-text>");
+      Console.Write("</elang-one>");
       terminal = false;
       return null;
     }
 
-    public Object Visit(Rule_elang_multi rule)
+    public Object Visit(Rule_elang_all rule)
     {
       if (!terminal) System.Console.WriteLine();
-      Console.Write("<elang-multi>");
+      Console.Write("<elang-all>");
       terminal = false;
       VisitRules(rule.rules);
       if (!terminal) System.Console.WriteLine();
-      Console.Write("</elang-multi>");
+      Console.Write("</elang-all>");
       terminal = false;
       return null;
     }

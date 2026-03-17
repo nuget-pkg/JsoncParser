@@ -1,8 +1,8 @@
 # https://fullstack.wiki/syntax/rfc8259/index
 
-elang-text = ws value ws;
+elang-one = ws value ws;
 
-elang-multi = ws value *( ws value ) ws;
+elang-all = ws value *( ws value ) ws;
 
 begin-array     = ws ("[" / "(") ws;  #; [ left square bracket
 
@@ -28,7 +28,6 @@ ws = *(
     linecomment /       #; single line comment
     comment);           #; multi line comment
 
-#linecomment = ( "//" / ";" / "#" ) inslcomment ( %x0A / %x0D );
 linecomment = ( "//" / ";" / "#!" ) inslcomment ( %x0A / %x0D );
 comment = "/*" inmlcomment "*/";
 
@@ -57,7 +56,8 @@ vector = begin-vector [ value *( value-separator value ) ] end-vector;
 
 quote = ("'" / "`") value;
 
-unquote =  ( "~@" value ) / ( "~" value );
+#unquote =  ( "~@" value ) / ( "~" value );
+unquote = ("~@" / "~") value;
 
 deref =  ( "?" value );
 

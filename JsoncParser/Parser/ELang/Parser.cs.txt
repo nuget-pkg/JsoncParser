@@ -19,7 +19,7 @@ namespace Global.Parser.ELang {
       if (ok)
       {
         arguments["Trace"] = "Off";
-        arguments["Rule"] = "elang-text";
+        arguments["Rule"] = "elang-one";
 
         for (int i = 0; i < args.Length; i++)
         {
@@ -141,8 +141,8 @@ namespace Global.Parser.ELang {
       ParserContext context = new ParserContext(text, trace);
 
       Rule rule = null;
-      if (rulename.ToLower().Equals("elang-text".ToLower())) rule = Rule_elang_text.Parse(context);
-      else if (rulename.ToLower().Equals("elang-multi".ToLower())) rule = Rule_elang_multi.Parse(context);
+      if (rulename.ToLower().Equals("elang-one".ToLower())) rule = Rule_elang_one.Parse(context);
+      else if (rulename.ToLower().Equals("elang-all".ToLower())) rule = Rule_elang_all.Parse(context);
       else if (rulename.ToLower().Equals("begin-array".ToLower())) rule = Rule_begin_array.Parse(context);
       else if (rulename.ToLower().Equals("begin-vector".ToLower())) rule = Rule_begin_vector.Parse(context);
       else if (rulename.ToLower().Equals("begin-object".ToLower())) rule = Rule_begin_object.Parse(context);

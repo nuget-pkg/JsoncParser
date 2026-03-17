@@ -6,12 +6,12 @@ namespace Global.Parser.ELang {
   public class Displayer:Visitor
   {
 
-    public Object Visit(Rule_elang_text rule)
+    public Object Visit(Rule_elang_one rule)
     {
       return VisitRules(rule.rules);
     }
 
-    public Object Visit(Rule_elang_multi rule)
+    public Object Visit(Rule_elang_all rule)
     {
       return VisitRules(rule.rules);
     }

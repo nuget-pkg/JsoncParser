@@ -28,7 +28,7 @@ public class EasyLanguageParser {
             return null;
         }
         var context = new ParserContext(json, false);
-        var rule = Rule_elang_text.Parse(context);
+        var rule = Rule_elang_one.Parse(context);
         return rule == null ? throw new ArgumentException($"Illegal JSONC: `{json}`") : RuleToObject(rule, numberAsDecimal, removeSurrogatePair);
     }
     public static object ParseMulti(string json, bool numberAsDecimal = false, bool removeSurrogatePair = false) {
@@ -36,7 +36,7 @@ public class EasyLanguageParser {
             return null;
         }
         var context = new ParserContext(json, false);
-        var rule = Rule_elang_multi.Parse(context);
+        var rule = Rule_elang_all.Parse(context);
         return rule == null ? throw new ArgumentException($"Illegal JSONC: `{json}`") : RuleToObject(rule, numberAsDecimal, removeSurrogatePair);
     }
     public static string FullName(dynamic x) {
@@ -258,9 +258,9 @@ public class EasyLanguageParser {
     }
     public static object RuleToObject(Rule rule, bool numberAsDecimal, bool removeSurrogatePair) {
         var rules = SkipUseless(rule.rules);
-        if (rule is Rule_elang_text) {
+        if (rule is Rule_elang_one) {
             return RuleToObject(rules[0], numberAsDecimal, removeSurrogatePair);
-        } else if (rule is Rule_elang_multi) {
+        } else if (rule is Rule_elang_all) {
             var result = new List<object>();
             Console.Error.WriteLine($"Rule_elang_multi: {rules.Count} rules");
             foreach (var r in rules) {
