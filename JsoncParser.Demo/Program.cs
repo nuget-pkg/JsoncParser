@@ -1,8 +1,7 @@
 using Global;
 using System;
 using System.IO;
-using Xunit;
-using static Global.EasyObjectClassic;
+using static Global.EasyObject;
 namespace Main;
 
 
@@ -13,27 +12,27 @@ static class Program {
             { "a": 123 }
             """);
         Echo(o1, "o1");
-        var exception1 = Assert.Throws<ArgumentException>(() => {
-            Global.StrictJsonParser.Parse("""
-            { a: 123 }
-            """);
-        });
-        exception1 = Assert.Throws<ArgumentException>(() => {
-            Global.StrictJsonParser.Parse("""
-            { "a": /*comment*/123 }
-            """);
-        });
-        Assert.Equal("Illegal JSON: `{ \"a\": /*comment*/123 }`", exception1.Message);
-        exception1 = Assert.Throws<ArgumentException>(() => {
-            Global.StrictJsonParser.Parse("""
-            { "a": //line comment
-              123 }
-            """);
-        });
-        Assert.Equal("""
-                     Illegal JSON: `{ "a": //line comment
-                       123 }`
-                     """.Replace("\r\n", "\n"), exception1.Message.Replace("\r\n", "\n"));
+        //var exception1 = Assert.Throws<ArgumentException>(() => {
+        //    Global.StrictJsonParser.Parse("""
+        //    { a: 123 }
+        //    """);
+        //});
+        //exception1 = Assert.Throws<ArgumentException>(() => {
+        //    Global.StrictJsonParser.Parse("""
+        //    { "a": /*comment*/123 }
+        //    """);
+        //});
+        //Assert.Equal("Illegal JSON: `{ \"a\": /*comment*/123 }`", exception1.Message);
+        //exception1 = Assert.Throws<ArgumentException>(() => {
+        //    Global.StrictJsonParser.Parse("""
+        //    { "a": //line comment
+        //      123 }
+        //    """);
+        //});
+        //Assert.Equal("""
+        //             Illegal JSON: `{ "a": //line comment
+        //               123 }`
+        //             """.Replace("\r\n", "\n"), exception1.Message.Replace("\r\n", "\n"));
     }
     static void TestJsonc() {
         ShowDetail = true;

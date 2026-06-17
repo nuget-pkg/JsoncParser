@@ -1,6 +1,5 @@
-﻿using static Global.EasyObjectClassic;
+﻿using static Global.EasyObject;
 using Xunit;
-using Xunit.Abstractions;
 using Global;
 using System;
 using System.Collections;
@@ -11,12 +10,12 @@ public class Elang1Test1
     public Elang1Test1(ITestOutputHelper testOutputHelper)
     {
         Out = testOutputHelper;
-        EasyObjectClassic.ClearSettings();
+        EasyObject.ClearSettings();
         Print("Setup() called");
     }
     private void Print(object x, string title = null)
     {
-        Out.WriteLine(EasyObjectClassic.ToPrintable(x, title));
+        Out.WriteLine(EasyObject.ToPrintable(x, title));
     }
     // [Fact]
     // public void Test01()

@@ -53,6 +53,6 @@
 	<PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CommonJsonInterface" Version="2026.318.115.18" />
+    <PackageReference Include="CommonJsonInterface" Version="2026.401.46.46" />
   </ItemGroup>
 </Project>
