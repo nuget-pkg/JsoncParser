@@ -38,7 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <!--<PackageReference Include="MyJson" Version="2024.503.1910.41" />-->
-    <PackageReference Include="EasyObject" Version="2026.618.144.58" />
+    <PackageReference Include="EasyObject" Version="2026.618.510.15" />
 	  <!--
     <PackageReference Include="xunit.v3" Version="3.2.2" />
     <PackageReference Include="Razorvine.Pickle" Version="1.5.0" />

@@ -20,7 +20,7 @@ public class XUnitTest1
     [Fact]
     public void Test01()
     {
-        T.Pass();
+        T.Pass(System.Reflection.MethodBase.GetCurrentMethod().Name);
         var o1 = Global.StrictJsonParser.Parse("""
             { "a": 123 }
             """);
@@ -31,12 +31,12 @@ public class XUnitTest1
         T.AssertIdentical("""
             {"a":123}
             """, ToJson(o1));
-        T.Pass();
+        T.Pass(System.Reflection.MethodBase.GetCurrentMethod().Name);
     }
     [Fact]
     public void Test02()
     {
-        T.Pass();
+        T.Pass(System.Reflection.MethodBase.GetCurrentMethod().Name);
         var o3 = Global.JsoncParser.Parse("""
             { "a": 123 }
             """);
@@ -66,12 +66,12 @@ public class XUnitTest1
         Assert.Equal("""
             {"a":123}
             """, ToJson(o6));
-        T.Pass();
+        T.Pass(System.Reflection.MethodBase.GetCurrentMethod().Name);
     }
     [Fact]
     public void Test03()
     {
-        T.Pass();
+        T.Pass(System.Reflection.MethodBase.GetCurrentMethod().Name);
         var o1 = Global.JsoncParser.Parse("""'helloハロー©'""");
         T.Log(o1, "o1");
         var json = new Global.PlainObjectConverter(forceAscii: false).Stringify(o1, false);
@@ -82,7 +82,7 @@ public class XUnitTest1
         Assert.Equal("""
              "hello\u30CF\u30ED\u30FC\u00A9"
              """, json);
-        T.Pass();
+        T.Pass(System.Reflection.MethodBase.GetCurrentMethod().Name);
     }
     //[Fact]
     //public void Test04()
