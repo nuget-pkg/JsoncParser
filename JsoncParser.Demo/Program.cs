@@ -12,27 +12,6 @@ static class Program {
             { "a": 123 }
             """);
         Echo(o1, "o1");
-        //var exception1 = Assert.Throws<ArgumentException>(() => {
-        //    Global.StrictJsonParser.Parse("""
-        //    { a: 123 }
-        //    """);
-        //});
-        //exception1 = Assert.Throws<ArgumentException>(() => {
-        //    Global.StrictJsonParser.Parse("""
-        //    { "a": /*comment*/123 }
-        //    """);
-        //});
-        //Assert.Equal("Illegal JSON: `{ \"a\": /*comment*/123 }`", exception1.Message);
-        //exception1 = Assert.Throws<ArgumentException>(() => {
-        //    Global.StrictJsonParser.Parse("""
-        //    { "a": //line comment
-        //      123 }
-        //    """);
-        //});
-        //Assert.Equal("""
-        //             Illegal JSON: `{ "a": //line comment
-        //               123 }`
-        //             """.Replace("\r\n", "\n"), exception1.Message.Replace("\r\n", "\n"));
     }
     static void TestJsonc() {
         ShowDetail = true;
@@ -69,5 +48,12 @@ static class Program {
         Echo(parser2.ParseJsonSequence(cljureCode01), "cljureCode01(parsed)");
         string cljureCode02 = File.ReadAllText("assets/cljure_code02.clj");
         Echo(parser2.ParseJsonSequence(cljureCode02), "cljureCode02(parsed)");
+
+        string json = """'abc'""";
+
+        Global.Parser.JsonC.ParserContext context = new Global.Parser.JsonC.ParserContext(json, false);
+        Global.Parser.JsonC.Rule_json_text rule = Global.Parser.JsonC.Rule_json_text.Parse(context);
+        Global.Parser.JsonC.XmlDisplayer displayer = new Global.Parser.JsonC.XmlDisplayer();
+        rule.Accept(displayer);
     }
 }
