@@ -6,11 +6,11 @@ using System.Text.RegularExpressions;
 
 namespace Global;
 
-public class EasyLanguageParser : IParseJson {
+public class LispLanguageParser : IParseJson {
     private readonly bool numberAsDecimal = false;
     private readonly bool removeSurrogatePair = false;
 
-    public EasyLanguageParser(bool numberAsDecimal, bool removeSurrogatePair) {
+    public LispLanguageParser(bool numberAsDecimal, bool removeSurrogatePair) {
         this.numberAsDecimal = numberAsDecimal;
         this.removeSurrogatePair = removeSurrogatePair;
     }

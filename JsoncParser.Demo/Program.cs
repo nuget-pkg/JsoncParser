@@ -58,10 +58,10 @@ static class Program {
     static void Main(string[] originalArgs) {
         TestStrinct();
         TestJsonc();
-        var parser = new EasyLanguageParser(numberAsDecimal: true, removeSurrogatePair: true);
+        var parser = new LispLanguageParser(numberAsDecimal: true, removeSurrogatePair: true);
         var result1 = parser.ParseJson("'🔥引火★★帝国🔥'");
         Echo(result1, "result1");
-        var parser2 = new EasyLanguageParser(numberAsDecimal: true, removeSurrogatePair: false);
+        var parser2 = new LispLanguageParser(numberAsDecimal: true, removeSurrogatePair: false);
         var result2 = parser2.ParseJson("'🔥引火★★帝国🔥'");
         Echo(result2, "result2");
 

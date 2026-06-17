@@ -1,9 +1,9 @@
 ﻿namespace Global;
 
 public class CSharpEasyLanguageHandler : IParseJson {
-    private readonly EasyLanguageParser jsonParser;
+    private readonly LispLanguageParser jsonParser;
     public CSharpEasyLanguageHandler(bool numberAsDecimal, bool removeSurrogatePair = false) {
-        jsonParser = new EasyLanguageParser(numberAsDecimal, removeSurrogatePair);
+        jsonParser = new LispLanguageParser(numberAsDecimal, removeSurrogatePair);
     }
     public object ParseJson(string json) {
         return jsonParser.ParseJson(json);
